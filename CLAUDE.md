@@ -1,0 +1,127 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+**Dungeon Crystal** is a digital TCG (Trading Card Game) playable on web and mobile. The stack:
+
+- **Monorepo:** pnpm workspaces + Turborepo
+- **`apps/server`** (`@dungeon-crystal/server`) — Colyseus 0.15 + Express, TypeScript, `tsx` for dev. Runs on port 2567.
+- **`apps/client`** (`@dungeon-crystal/client`) — Vite 6 + React 18 + TypeScript. Runs on port 3000.
+- **`apps/mobile`** — future; not in active scope
+- **Auth/DB:** Supabase CLI (`supabase start`) — Postgres on port 54322, API on 54321, Studio on 54323
+- **Docker Compose:** manages only app containers (server + client); Supabase CLI handles all infra
+
+## Common Commands
+
+```bash
+# Root (runs all apps via Turborepo)
+pnpm dev          # start all apps in dev mode
+pnpm build        # build all apps
+pnpm lint         # lint all apps
+pnpm test         # run all tests
+
+# Per-app
+pnpm --filter @dungeon-crystal/server dev
+pnpm --filter @dungeon-crystal/client dev
+
+# Prisma (run from apps/server)
+pnpm --filter @dungeon-crystal/server prisma migrate dev   # apply schema changes + regenerate client
+pnpm --filter @dungeon-crystal/server prisma generate      # regenerate client only
+pnpm --filter @dungeon-crystal/server prisma studio        # visual DB browser
+
+# Supabase (local infra)
+supabase start    # spin up Postgres, Auth, Studio
+supabase stop
+supabase db reset # re-run all migrations
+
+# Docker (app containers only)
+docker compose up --build
+```
+
+## Architecture
+
+### Server (`apps/server`)
+
+Colyseus rooms handle all real-time game state. Express handles REST (health, auth webhooks). Use **Prisma** for all DB access — no raw SQL.
+
+- `src/rooms/` — Colyseus Room classes. Each room owns its `GameState` schema.
+- `src/game/` — pure game logic (rules engine, state machines) decoupled from Colyseus transport
+- `src/db/` — Prisma client instantiation and query helpers
+- `prisma/schema.prisma` — single source of truth for DB schema; run `pnpm prisma migrate dev` to apply changes
+- Colyseus monitor at `/colyseus` (dev only)
+- `GET /health` → `{"status":"ok"}`
+
+### Client (`apps/client`)
+
+- `src/components/Card.tsx` — card renderer; uses **inline styles** (not Tailwind) because card type colors are dynamic runtime values
+- `src/components/BattleScreen.tsx` — two-player battlefield layout
+- `src/data/sampleCards.ts` — sample cards covering all card types
+- Use **Tailwind CSS v4** (`@tailwindcss/vite` plugin, no `tailwind.config.js`) for all layout/page-level code
+- Design tokens registered in `@theme` block in `src/index.css` — use as Tailwind classes: `text-essence`, `bg-surface`, `font-ui`, etc.
+
+### Tailwind Design Tokens (defined in `apps/client/src/index.css`)
+
+```
+--color-essence, --color-gold, --color-stone, --color-iron, --color-generic
+--color-bg, --color-surface, --color-border, --color-text, --color-text-muted
+--font-display (Cinzel Decorative), --font-ui (Cinzel), --font-body (Crimson Pro)
+```
+
+## Game Rules (authoritative — use when implementing rules engine)
+
+### Win / Loss
+- First to **25 Essence** wins (active player wins on tie)
+- Lose immediately on required draw from an **empty deck**
+
+### Resources
+- **Gold, Iron, Stone, Mana** — four resource types (Mana is purple, for spells)
+- **Essence** — score counter only; cannot be raided or stolen
+- **Siphon:** each unblocked raider = +1 Essence to attacker
+- **Global Overdrive:** triggers at 15 Essence (any player); all Mining permanently produces 2
+
+### Turn Structure
+- Draw 2 cards; P1 skips first draw
+- Opening hand: draw 7, keep 5, bottom 2
+- Hand max: 7 — draw first, discard to 7 at end of turn
+- Starting resources: P1 `1G/1I/1S/1M/3 Workers`; P2 `2G/1I/1S/2M/3 Workers`
+
+### Combat
+- ⚔ ≥ 🛡 = destroyed; damage is simultaneous
+- Gang block: combined 🛡, individual ⚔ checks
+- Fortifications block with HP (not 🛡); take ⚔ damage per block; deal no damage back; one Fortification per Raider; destroyed at 0 HP
+
+### Deck Construction
+- 40 cards; Named cards max 1 copy; non-Named max 3 copies; Best-of-1, no sideboard
+
+### Influence
+- Starts at 0, max 10; +1 after any raid where at least one Raider Siphons or steals resources
+
+### Keywords
+- Only two: **Notoriety** (♛ X) and **Persistent** (∞)
+
+### Equipment
+- Lives in **Permanent Zone** when unattached
+- Equipped creature destroyed → equipment returns to owner's Permanent Zone
+- Raider destroyed in combat → equipment goes to **defending player's** Permanent Zone (loot)
+- 0 Durability → destroyed to owner's discard
+- Can be scrapped during Main Phase for 1 Iron (removed from game)
+
+## Card Data Model
+
+Card types: `Named Creature`, `Creature`, `Ritual Spell`, `Reflex Spell`, `Workshop Structure`, `Equipment`
+
+Key fields: `notorietyReq` (drives ♛ display), `keywords` (array — only `PERSISTENT` renders ∞), cost pips use type `MANA` (not `ESSENCE`).
+
+Card layout top→bottom: name bar → cost row → art box (arch-top; rectangular for Equipment) → type line → keyword bar → text box → stats bar → collector strip.
+
+## Supabase Local Credentials
+
+```
+Postgres:  postgresql://postgres:postgres@127.0.0.1:54322/postgres
+API:       http://127.0.0.1:54321
+Studio:    http://127.0.0.1:54323
+```
+
+OAuth secrets read via `env()` substitution in `supabase/config.toml`.
