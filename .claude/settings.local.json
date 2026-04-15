@@ -13,7 +13,9 @@
       "Bash(ls ../../node_modules/@types/)",
       "Bash(ls apps/server/.eslint* apps/server/eslint*)",
       "Bash(ls apps/server/tsconfig*.json)",
-      "Bash(pnpm install:*)"
+      "Bash(pnpm install:*)",
+      "Bash(pnpm --filter @dungeon-crystal/client build)",
+      "Bash(pnpm --filter @dungeon-crystal/ui-web build)"
     ]
   }
 }

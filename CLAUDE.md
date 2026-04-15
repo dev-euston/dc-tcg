@@ -8,10 +8,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **Monorepo:** pnpm workspaces + Turborepo
 - **`apps/server`** (`@dungeon-crystal/server`) — Colyseus 0.15 + Express, TypeScript, `tsx` for dev. Runs on port 2567.
-- **`apps/client`** (`@dungeon-crystal/client`) — Vite 6 + React 18 + TypeScript. Runs on port 3000.
+- **`apps/ui-web`** (`@dungeon-crystal/ui-web`) — Vite 6 + React 18 + TypeScript. Runs on port 3000.
 - **`apps/mobile`** — future; not in active scope
 - **Auth/DB:** Supabase CLI (`supabase start`) — Postgres on port 54322, API on 54321, Studio on 54323
-- **Docker Compose:** manages only app containers (server + client); Supabase CLI handles all infra
+- **Docker Compose:** manages only app containers (server + ui-web); Supabase CLI handles all infra
 
 ## Common Commands
 
@@ -24,7 +24,7 @@ pnpm test         # run all tests
 
 # Per-app
 pnpm --filter @dungeon-crystal/server dev
-pnpm --filter @dungeon-crystal/client dev
+pnpm --filter @dungeon-crystal/ui-web dev
 
 # Prisma (run from apps/server)
 pnpm --filter @dungeon-crystal/server prisma migrate dev   # apply schema changes + regenerate client
@@ -58,15 +58,14 @@ Colyseus rooms handle all real-time game state. Express handles REST (health, au
 - Colyseus monitor at `/colyseus` (dev only)
 - `GET /health` → `{"status":"ok"}`
 
-### Client (`apps/client`)
+### Web UI (`apps/ui-web`)
 
-- `src/components/Card.tsx` — card renderer; uses **inline styles** (not Tailwind) because card type colors are dynamic runtime values
-- `src/components/BattleScreen.tsx` — two-player battlefield layout
-- `src/data/sampleCards.ts` — sample cards covering all card types
+- Vite 6 + React 18 + TypeScript; package name `@dungeon-crystal/ui-web`
 - Use **Tailwind CSS v4** (`@tailwindcss/vite` plugin, no `tailwind.config.js`) for all layout/page-level code
 - Design tokens registered in `@theme` block in `src/index.css` — use as Tailwind classes: `text-essence`, `bg-surface`, `font-ui`, etc.
+- Use **inline styles** (not Tailwind) for any UI where colors are dynamic runtime values (e.g. card type colours)
 
-### Tailwind Design Tokens (defined in `apps/client/src/index.css`)
+### Tailwind Design Tokens (defined in `apps/ui-web/src/index.css`)
 
 ```
 --color-essence, --color-gold, --color-stone, --color-iron, --color-generic

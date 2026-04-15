@@ -7,7 +7,7 @@ A digital trading card game playable on web and mobile.
 ```
 apps/
   server/   — Game server (Colyseus + Express + Prisma)
-  client/   — Web client (Vite + React)
+  ui-web/   — Web client (Vite + React)
 packages/   — Shared packages (types, utilities)
 supabase/   — Supabase config and migrations
 ```
@@ -50,7 +50,7 @@ pnpm test          # run all tests
 
 # Run a single app
 pnpm --filter @dungeon-crystal/server dev
-pnpm --filter @dungeon-crystal/client dev
+pnpm --filter @dungeon-crystal/ui-web dev
 
 # Database (Prisma — run from apps/server)
 pnpm --filter @dungeon-crystal/server prisma migrate dev
@@ -69,6 +69,6 @@ supabase db reset
 | Server     | Colyseus 0.15, Express, TypeScript |
 | ORM        | Prisma                            |
 | Auth / DB  | Supabase (Postgres)               |
-| Web client | Vite 6, React 18, TypeScript      |
+| Web UI     | Vite 6, React 18, TypeScript      |
 | Styling    | Tailwind CSS v4                   |
 | Monorepo   | pnpm workspaces, Turborepo        |
