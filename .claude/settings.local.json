@@ -15,7 +15,8 @@
       "Bash(ls apps/server/tsconfig*.json)",
       "Bash(pnpm install:*)",
       "Bash(pnpm --filter @dungeon-crystal/client build)",
-      "Bash(pnpm --filter @dungeon-crystal/ui-web build)"
+      "Bash(pnpm --filter @dungeon-crystal/ui-web build)",
+      "Bash(git check-ignore:*)"
     ]
   }
 }

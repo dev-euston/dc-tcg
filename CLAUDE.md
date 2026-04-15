@@ -10,8 +10,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **`apps/server`** (`@dungeon-crystal/server`) — Colyseus 0.15 + Express, TypeScript, `tsx` for dev. Runs on port 2567.
 - **`apps/ui-web`** (`@dungeon-crystal/ui-web`) — Vite 6 + React 18 + TypeScript. Runs on port 3000.
 - **`apps/mobile`** — future; not in active scope
-- **Auth/DB:** Supabase CLI (`supabase start`) — Postgres on port 54322, API on 54321, Studio on 54323
-- **Docker Compose:** manages only app containers (server + ui-web); Supabase CLI handles all infra
+- **Auth/DB:** Supabase CLI (`supabase start`) — Postgres on port 54322, API on 54321, Studio on 54323 (auth layer)
+- **Game DB:** Docker Compose Postgres on port **5632** — used by Prisma for game data. Copy `apps/server/.env.example` → `apps/server/.env` before running Prisma commands.
+- **Docker Compose:** manages the Postgres game DB (port 5632) and app containers (server + ui-web)
 
 ## Common Commands
 

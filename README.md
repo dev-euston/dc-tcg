@@ -25,20 +25,27 @@ supabase/   — Supabase config and migrations
 # Install dependencies
 pnpm install
 
-# Start local Supabase (Postgres + Auth + Studio)
+# Copy server env (needed for Prisma)
+cp apps/server/.env.example apps/server/.env
+
+# Start game DB (Postgres via Docker Compose)
+docker compose up -d postgres
+
+# Start local Supabase (Auth + Studio)
 supabase start
 
 # Start all apps in dev mode
 pnpm dev
 ```
 
-| Service         | URL                        |
-|-----------------|----------------------------|
-| Web client      | http://localhost:3000       |
-| Game server     | http://localhost:2567        |
-| Colyseus monitor| http://localhost:2567/colyseus |
-| Supabase Studio | http://localhost:54323      |
-| Supabase API    | http://localhost:54321      |
+| Service         | URL / connection                                             |
+|-----------------|--------------------------------------------------------------|
+| Web client      | http://localhost:3000                                        |
+| Game server     | http://localhost:2567                                        |
+| Colyseus monitor| http://localhost:2567/colyseus                               |
+| Game DB (Prisma)| postgresql://postgres:postgres@localhost:5632/dungeon_crystal |
+| Supabase Studio | http://localhost:54323                                       |
+| Supabase API    | http://localhost:54321                                       |
 
 ## Common Commands
 
