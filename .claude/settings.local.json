@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm --filter @dungeon-crystal/client lint)",
+      "Bash(pnpm --filter @dungeon-crystal/server exec tsc --noEmit)",
+      "Bash(node -e \"const p = require\\('./apps/server/node_modules/express/package.json'\\); console.log\\(JSON.stringify\\({main: p.main, exports: p.exports, types: p.types}, null, 2\\)\\)\")",
+      "Bash(node -e \"const p = require\\('./apps/server/node_modules/express/package.json'\\); console.log\\(Object.keys\\(p\\)\\)\")",
+      "Bash(node -e \"const p = require\\('./apps/server/node_modules/@types/express/package.json'\\); console.log\\(JSON.stringify\\({main: p.main, exports: p.exports, types: p.types, version: p.version}, null, 2\\)\\)\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({k: d[k] for k in ['name','version','main'] if k in d}, indent=2\\)\\)\")",
+      "Bash(npx tsc:*)",
+      "Bash(ls node_modules/@types/)",
+      "Bash(ls ../../node_modules/@types/)",
+      "Bash(ls apps/server/.eslint* apps/server/eslint*)",
+      "Bash(ls apps/server/tsconfig*.json)",
+      "Bash(pnpm install:*)"
+    ]
+  }
+}

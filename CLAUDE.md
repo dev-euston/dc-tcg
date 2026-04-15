@@ -40,6 +40,11 @@ supabase db reset # re-run all migrations
 docker compose up --build
 ```
 
+## pnpm / Monorepo Notes
+
+- `.npmrc` sets `public-hoist-pattern[]=@types/*` so all `@types` packages are hoisted to root `node_modules`. This is required for VS Code's TypeScript language server (which runs from the workspace root) to find type declarations. After any `pnpm install`, types will be at both `apps/server/node_modules/@types/` and `node_modules/@types/`.
+- `skipLibCheck: true` is intentional in `apps/server/tsconfig.json` — Colyseus 0.15 and `@colyseus/schema` have errors in their own declaration files that are not ours to fix.
+
 ## Architecture
 
 ### Server (`apps/server`)
