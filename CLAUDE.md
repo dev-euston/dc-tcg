@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Dungeon Crystal** is a digital TCG (Trading Card Game) playable on web and mobile. The stack:
 
 - **Monorepo:** pnpm workspaces + Turborepo
-- **`apps/server`** (`@dungeon-crystal/server`) — Colyseus 0.15 + Express, TypeScript, `tsx` for dev. Runs on port 2567.
+- **`apps/server`** (`@dungeon-crystal/server`) — Colyseus 0.15 + Fastify, TypeScript, `tsx` for dev. Runs on port 2567.
 - **`apps/ui-web`** (`@dungeon-crystal/ui-web`) — Vite 6 + React 18 + TypeScript. Runs on port 3000.
 - **`apps/mobile`** — future; not in active scope
 - **Auth/DB:** Supabase CLI (`supabase start`) — Postgres on port 54322, API on 54321, Studio on 54323 (auth layer)
@@ -50,13 +50,13 @@ docker compose up --build
 
 ### Server (`apps/server`)
 
-Colyseus rooms handle all real-time game state. Express handles REST (health, auth webhooks). Use **Prisma** for all DB access — no raw SQL.
+Colyseus rooms handle all real-time game state. Fastify handles REST (health, auth webhooks). Use **Prisma** for all DB access — no raw SQL.
 
 - `src/rooms/` — Colyseus Room classes. Each room owns its `GameState` schema.
 - `src/game/` — pure game logic (rules engine, state machines) decoupled from Colyseus transport
 - `src/db/` — Prisma client instantiation and query helpers
 - `prisma/schema.prisma` — single source of truth for DB schema; run `pnpm prisma migrate dev` to apply changes
-- Colyseus monitor at `/colyseus` (dev only)
+- Colyseus matchmaking API at `/matchmake/` (built-in, always available)
 - `GET /health` → `{"status":"ok"}`
 
 ### Web UI (`apps/ui-web`)

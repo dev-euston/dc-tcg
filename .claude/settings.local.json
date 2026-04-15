@@ -16,7 +16,8 @@
       "Bash(pnpm install:*)",
       "Bash(pnpm --filter @dungeon-crystal/client build)",
       "Bash(pnpm --filter @dungeon-crystal/ui-web build)",
-      "Bash(git check-ignore:*)"
+      "Bash(git check-ignore:*)",
+      "Bash(pnpm --filter @dungeon-crystal/server lint)"
     ]
   }
 }

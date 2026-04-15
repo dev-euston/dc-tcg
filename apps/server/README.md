@@ -1,13 +1,13 @@
 # @dungeon-crystal/server
 
-Game server for Dungeon Crystal TCG — Colyseus 0.15 + Express, TypeScript.
+Game server for Dungeon Crystal TCG — Colyseus 0.15 + Fastify, TypeScript.
 
 ## Stack
 
 | | |
 |---|---|
 | Real-time | Colyseus 0.15 (WebSocket rooms) |
-| HTTP | Express 4 |
+| HTTP | Fastify 5 |
 | Language | TypeScript 5, Node 20 |
 | Dev runner | `tsx watch` |
 
@@ -26,14 +26,14 @@ Server starts on **http://localhost:2567**.
 | Endpoint | Description |
 |---|---|
 | `GET /health` | Health check → `{"status":"ok"}` |
-| `GET /colyseus` | Colyseus monitor (dev only) |
+| `GET /matchmake/` | Colyseus built-in matchmaking API |
 | `ws://localhost:2567` | WebSocket entry point |
 
 ## Structure
 
 ```
 src/
-  index.ts          — Express + Colyseus server bootstrap
+  index.ts          — Fastify + Colyseus server bootstrap
   rooms/
     GameRoom.ts     — Colyseus Room (game state, join/leave lifecycle)
   game/             — Pure game logic (rules engine, state machines)
@@ -52,4 +52,3 @@ pnpm start   # runs dist/index.js
 | Variable | Default | Description |
 |---|---|---|
 | `PORT` | `2567` | Port to listen on |
-| `NODE_ENV` | — | Set to `production` to disable monitor |
