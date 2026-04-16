@@ -27,10 +27,10 @@ pnpm test         # run all tests
 pnpm --filter @dungeon-crystal/server dev
 pnpm --filter @dungeon-crystal/ui-web dev
 
-# Prisma (run from apps/server, or use filter from root)
-pnpm --filter @dungeon-crystal/server db:migrate   # apply schema changes + regenerate client
-pnpm --filter @dungeon-crystal/server db:generate  # regenerate client only
-pnpm --filter @dungeon-crystal/server db:studio    # visual DB browser
+# Prisma (root shortcuts available)
+pnpm db:migrate   # apply schema changes + regenerate client
+pnpm db:generate  # regenerate client only
+pnpm db:studio    # visual DB browser
 
 # Supabase (local infra)
 supabase start    # spin up Postgres, Auth, Studio
