@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CardType {
+  NAMED_CREATURE
+  CREATURE
+  RITUAL_SPELL
+  REFLEX_SPELL
+  WORKSHOP_STRUCTURE
+  EQUIPMENT
+}
+
+enum Keyword {
+  PERSISTENT
+}
+
+model Card {
+  id           String    @id @default(cuid())
+  slug         String    @unique
+  name         String
+  type         CardType
+
+  // Cost pips
+  costGold     Int       @default(0)
+  costIron     Int       @default(0)
+  costStone    Int       @default(0)
+  costMana     Int       @default(0)
+
+  notorietyReq Int?
+  keywords     Keyword[]
+
+  // Creature stats
+  attack       Int?
+  defense      Int?
+
+  // Equipment
+  durability   Int?
+
+  // Workshop Structure
+  hp           Int?
+
+  rulesText    String?
+  flavorText   String?
+
+  setCode      String
+  collectorNum Int
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}

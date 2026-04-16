@@ -10,6 +10,7 @@ Game server for Dungeon Crystal TCG — Colyseus 0.15 + Fastify, TypeScript.
 | HTTP | Fastify 5 |
 | Language | TypeScript 5, Node 20 |
 | Dev runner | `tsx watch` |
+| DB ORM | Prisma 7 + PostgreSQL (port 5632 via Docker Compose) |
 
 ## Development
 
@@ -29,6 +30,16 @@ Server starts on **http://localhost:2567**.
 | `GET /matchmake/` | Colyseus built-in matchmaking API |
 | `ws://localhost:2567` | WebSocket entry point |
 
+## Database
+
+Requires the Docker Compose Postgres container on port 5632.  Copy `.env.example` → `.env` before running Prisma commands.
+
+```bash
+pnpm db:migrate    # apply schema changes + regenerate client
+pnpm db:generate   # regenerate client only
+pnpm db:studio     # visual DB browser (Prisma Studio)
+```
+
 ## Structure
 
 ```
@@ -37,7 +48,12 @@ src/
   rooms/
     GameRoom.ts     — Colyseus Room (game state, join/leave lifecycle)
   game/             — Pure game logic (rules engine, state machines)
-  db/               — Prisma client and query helpers
+  db/
+    client.ts       — Prisma client singleton (default export)
+prisma/
+  schema.prisma     — DB schema (Card model + enums)
+  migrations/       — Applied migration files
+prisma.config.ts    — Prisma 7 config (datasource URL, migrate settings)
 ```
 
 ## Building
@@ -52,3 +68,4 @@ pnpm start   # runs dist/index.js
 | Variable | Default | Description |
 |---|---|---|
 | `PORT` | `2567` | Port to listen on |
+| `DATABASE_URL` | see `.env.example` | Prisma connection string (Docker Compose Postgres) |

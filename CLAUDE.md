@@ -27,10 +27,10 @@ pnpm test         # run all tests
 pnpm --filter @dungeon-crystal/server dev
 pnpm --filter @dungeon-crystal/ui-web dev
 
-# Prisma (run from apps/server)
-pnpm --filter @dungeon-crystal/server prisma migrate dev   # apply schema changes + regenerate client
-pnpm --filter @dungeon-crystal/server prisma generate      # regenerate client only
-pnpm --filter @dungeon-crystal/server prisma studio        # visual DB browser
+# Prisma (run from apps/server, or use filter from root)
+pnpm --filter @dungeon-crystal/server db:migrate   # apply schema changes + regenerate client
+pnpm --filter @dungeon-crystal/server db:generate  # regenerate client only
+pnpm --filter @dungeon-crystal/server db:studio    # visual DB browser
 
 # Supabase (local infra)
 supabase start    # spin up Postgres, Auth, Studio
@@ -54,8 +54,10 @@ Colyseus rooms handle all real-time game state. Fastify handles REST (health, au
 
 - `src/rooms/` — Colyseus Room classes. Each room owns its `GameState` schema.
 - `src/game/` — pure game logic (rules engine, state machines) decoupled from Colyseus transport
-- `src/db/` — Prisma client instantiation and query helpers
-- `prisma/schema.prisma` — single source of truth for DB schema; run `pnpm prisma migrate dev` to apply changes
+- `src/db/` — Prisma client instantiation and query helpers; `client.ts` exports a default singleton
+- `prisma/schema.prisma` — single source of truth for DB schema; run `pnpm db:migrate` to apply changes
+- `prisma.config.ts` — **Prisma 7 config** (datasource URL for CLI; loads `.env` via dotenv)
+- **Prisma 7 note:** `url` is NOT in `schema.prisma` — it lives in `prisma.config.ts` under `datasource.url`. `PrismaClient` requires a `PrismaPg` adapter (`@prisma/adapter-pg`) passed at construction time. Both `prisma.config.ts` and `vitest.config.ts` load `.env` via dotenv explicitly.
 - Colyseus matchmaking API at `/matchmake/` (built-in, always available)
 - `GET /health` → `{"status":"ok"}`
 

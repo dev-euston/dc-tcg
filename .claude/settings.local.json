@@ -17,7 +17,19 @@
       "Bash(pnpm --filter @dungeon-crystal/client build)",
       "Bash(pnpm --filter @dungeon-crystal/ui-web build)",
       "Bash(git check-ignore:*)",
-      "Bash(pnpm --filter @dungeon-crystal/server lint)"
+      "Bash(pnpm:*)",
+      "Bash(pnpm --filter @dungeon-crystal/server add -D vitest)",
+      "Bash(pnpm --filter @dungeon-crystal/server test)",
+      "Bash(pnpm --filter @dungeon-crystal/server add @prisma/client)",
+      "Bash(pnpm --filter @dungeon-crystal/server add -D prisma)",
+      "Bash(npx prisma:*)",
+      "Bash(pnpm --filter @dungeon-crystal/server add @prisma/adapter-pg pg)",
+      "Bash(pnpm --filter @dungeon-crystal/server add -D @types/pg)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5632/dungeon_crystal\" npx prisma migrate dev --name init)",
+      "Bash(rtk:*)",
+      "Bash(pnpm --filter @dungeon-crystal/server add -D dotenv)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5632/dungeon_crystal\" rtk prisma migrate status)",
+      "Bash(PGPASSWORD=postgres rtk psql -h localhost -p 5632 -U postgres -d dungeon_crystal -c \"\\\\dt\")"
     ]
   }
 }
