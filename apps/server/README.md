@@ -29,6 +29,11 @@ Server starts on **http://localhost:2567**.
 | `GET /health` | Health check → `{"status":"ok"}` |
 | `GET /matchmake/` | Colyseus built-in matchmaking API |
 | `ws://localhost:2567` | WebSocket entry point |
+| `POST /users/:userId/decks` | Create a deck (upserts user implicitly) |
+| `GET /users/:userId/decks` | List all decks for a user (with card counts) |
+| `GET /decks/:deckId` | Get a deck with full card list |
+| `PUT /decks/:deckId` | Rename a deck or replace its cards |
+| `DELETE /decks/:deckId` | Delete a deck (cascades DeckCard rows) |
 
 ## Database
 
@@ -50,8 +55,10 @@ src/
   game/             — Pure game logic (rules engine, state machines)
   db/
     client.ts       — Prisma client singleton (default export)
+  routes/
+    decks.ts        — Fastify plugin: deck CRUD routes
 prisma/
-  schema.prisma     — DB schema (Card model + enums)
+  schema.prisma     — DB schema (User, Deck, DeckCard, Card + enums)
   migrations/       — Applied migration files
 prisma.config.ts    — Prisma 7 config (datasource URL, migrate settings)
 ```
